@@ -1,0 +1,7 @@
+.*
+ok
+construct_check.py
+*\__pycache__
+desktop.ini
+*\tests
+!.gitignore

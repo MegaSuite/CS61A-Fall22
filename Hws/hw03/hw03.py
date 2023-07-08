@@ -24,7 +24,12 @@ def num_eights(pos):
     ...       ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr', 'For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if pos < 8:
+        return 0
+    elif pos % 10 == 8:
+        return 1 + num_eights(pos//10)
+    else:
+        return 0 + num_eights(pos//10)
 
 
 def pingpong(n):
@@ -60,7 +65,15 @@ def pingpong(n):
     ...       ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    def helper(n, id, val, unit):
+        if n == id:
+            return val
+        if num_eights(id) > 0 or id % 8 == 0:
+            return helper(n, id+1, val-unit, -unit)
+        else:
+            return helper(n, id+1, val+unit, unit)
+    return helper(n, 1, 1, 1)
+
 
 
 def next_larger_coin(coin):
@@ -99,6 +112,16 @@ def next_smaller_coin(coin):
         return 1
 
 
+def count_helper(change,coin):
+    if change == 0:
+        return 1
+    elif change < 0 or coin == None:
+        return 0
+    else:
+        return count_helper(change-coin,coin) + count_helper(change,next_larger_coin(coin))
+
+
+
 def count_coins(change):
     """Return the number of ways to make change using coins of value of 1, 5, 10, 25.
     >>> count_coins(15)
@@ -117,6 +140,7 @@ def count_coins(change):
     True
     """
     "*** YOUR CODE HERE ***"
+    return count_helper(change,1)
 
 
 anonymous = False  # Change to True if you would like to remain anonymous on the final leaderboard.

@@ -29,7 +29,12 @@ def ordered_digits(x):
 
     """
     "*** YOUR CODE HERE ***"
-
+    flag = True
+    while x > 0:
+        if x % 10 < x // 10 % 10:
+            flag = False
+        x = x // 10
+    return flag
 
 def get_k_run_starter(n, k):
     """Returns the 0th digit of the kth increasing run within n.
@@ -52,12 +57,12 @@ def get_k_run_starter(n, k):
     """
     i = 0
     final = None
-    while ____________________________:
-        while ____________________________:
-            ____________________________
-        final = ____________________________
-        i = ____________________________
-        n = ____________________________
+    while i < k + 1:
+        while n // 10 and n % 10 > n //10 % 10:
+            n //= 10
+        final = n % 10
+        i = i + 1
+        n = n // 10
     return final
 
 

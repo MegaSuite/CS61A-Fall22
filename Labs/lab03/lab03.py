@@ -109,6 +109,7 @@ def apply_twice(func):
     return apply_twice_func
 
 
+# hard to understand to the end 
 
 def div_by_primes_under(n):
     """

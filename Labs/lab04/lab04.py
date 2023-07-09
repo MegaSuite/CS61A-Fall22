@@ -125,9 +125,7 @@ def double_eights(n):
     "*** YOUR CODE HERE ***"
     # formatted to string
     nstr = str(n)
-    if nstr.find('88') == -1:
-        return False
-    return True
+    return '88' in nstr
 
 
     '''
@@ -164,6 +162,10 @@ def riffle(deck):
     "*** YOUR CODE HERE ***"
     return [t for x in [[deck[i], deck[i + len(deck) // 2]] for i in range(len(deck) // 2)] for t in x]
 
+    # use sum() to break the inner subsequence
+    '''
+    return [t for t in sum([[deck[i], deck[i + len(deck) // 2]] for i in range(len(deck) // 2)],[])]
+    '''
 
     # another way --turple
     '''

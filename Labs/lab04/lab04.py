@@ -20,7 +20,19 @@ def summation(n, term):
     """
     assert n >= 1
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        return term(1)
+    else:
+        return term(n) + summation(n-1, term)
+    
 
+def pascal_builder(row):
+    if row == 0:
+        return [1]
+    if row == 1:
+        return [1, 1]
+    result = pascal_builder(row-1)
+    return [1] + [result[i-1] + result[i] for i in range(1,len(result))] + [1]
 
 def pascal(row, column):
     """Returns the value of the item in Pascal's Triangle
@@ -35,7 +47,16 @@ def pascal(row, column):
     6
     """
     "*** YOUR CODE HERE ***"
+    numbers = pascal_builder(row)
 
+    if column > len(numbers):
+        return 0
+    else:
+        return numbers[column]
+    
+
+
+#############hard to get
 
 def paths(m, n):
     """Return the number of paths from one corner of an
@@ -51,6 +72,16 @@ def paths(m, n):
     1
     """
     "*** YOUR CODE HERE ***"
+    if m == 1 and n == 1:
+        return 1
+    elif m == 1:
+        return paths(m, n-1)
+    elif n == 1:
+        return paths(m-1, n)
+    return paths(m-1,n) + paths(m, n-1)
+
+#################################
+
 
 
 def couple(s, t):
@@ -67,6 +98,7 @@ def couple(s, t):
     """
     assert len(s) == len(t)
     "*** YOUR CODE HERE ***"
+    return [[s[i],t[i]] for i in range(len(s))]
 
 
 def double_eights(n):
@@ -91,6 +123,22 @@ def double_eights(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    # formatted to string
+    nstr = str(n)
+    if nstr.find('88') == -1:
+        return False
+    return True
+
+
+    '''
+    # another way
+    if n <= 10:
+        return False
+    if n % 100  == 88:
+        return True
+    else:
+        return double_eights(n // 10)
+    '''
 
 
 def coords(fn, seq, lower, upper):
@@ -101,7 +149,7 @@ def coords(fn, seq, lower, upper):
     [[-2, 4], [1, 1], [3, 9]]
     """
     "*** YOUR CODE HERE ***"
-    return ______
+    return [[x,fn(x)] for x in seq if fn(x) >= 1 and fn(x) <= 9]
 
 
 def riffle(deck):
@@ -114,4 +162,10 @@ def riffle(deck):
     [0, 10, 1, 11, 2, 12, 3, 13, 4, 14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19]
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    return [t for x in [[deck[i], deck[i + len(deck) // 2]] for i in range(len(deck) // 2)] for t in x]
+
+
+    # another way --turple
+    '''
+    return [t for x in zip(deck[:-len(deck)//2], deck[len(deck)//2:]) for t in x]
+    '''

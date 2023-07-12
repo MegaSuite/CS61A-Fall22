@@ -11,7 +11,17 @@ def merge(a, b):
     [2, 3, 5, 7, 8, 9, 11, 13, 14, 15]
     """
     "*** YOUR CODE HERE ***"
-
+    s1, s2 = next(a), next(b)
+    while True:
+      if s1 == s2:
+        yield s1
+        s1, s2 = next(a), next(b)
+      elif s1 < s2:
+        yield s1 
+        s1 = next(a)
+      else:
+        yield s2
+        s2 = next(b)
 
 def gen_perms(seq):
     """Generates all permutations of the given sequence. Each permutation is a
@@ -36,7 +46,21 @@ def gen_perms(seq):
     [['a', 'b'], ['b', 'a']]
     """
     "*** YOUR CODE HERE ***"
+    def perm(perms, x, i):
+        l = list(perms)
+        for ind in range(len(l)):
+            if ind == i:
+                yield x
+            yield l[ind]
+        if len(l) == i:
+            yield x
 
+    if len(seq) == 1:
+        yield seq
+        return
+    for perms in gen_perms(seq[1:]):
+        for i in range(len(seq)):
+            yield list(perm(perms, seq[0], i))
 
 def yield_paths(t, value):
     """Yields all possible paths from the root of t to a node with the label
@@ -72,10 +96,11 @@ def yield_paths(t, value):
     >>> sorted(list(path_to_2))
     [[0, 2], [0, 2, 1, 2]]
     """
-    "*** YOUR CODE HERE ***"
-    for _______________ in _________________:
-        for _______________ in _________________:
-            "*** YOUR CODE HERE ***"
+    if label(t) == value:
+      yield [label(t)]
+    for b in branches(t):
+      for path in yield_paths(b, value):
+        yield [label(t)] + path
 
 
 def hailstone(n):
@@ -89,7 +114,15 @@ def hailstone(n):
     1
     """
     "*** YOUR CODE HERE ***"
-
+    yield int(n)
+    while True:
+      if n != 1:
+        if n % 2 == 0:
+          yield from hailstone(n/2)
+        else:
+          yield from hailstone(n*3+1)
+      else:
+        yield from hailstone(1)
 
 def remainders_generator(m):
     """
@@ -123,6 +156,17 @@ def remainders_generator(m):
     11
     """
     "*** YOUR CODE HERE ***"
+    def helper(a, b):
+      n = naturals()
+      while True:
+        s = next(n)
+        if s % a == b:
+          yield s
+
+    count = 0
+    while count < m:
+      yield helper(m, count)
+      count += 1
 
 
 # Tree ADT

@@ -34,10 +34,10 @@ class Mint:
 
     def create(self, coin):
         "*** YOUR CODE HERE ***"
-
+        return coin(self.year)
     def update(self):
         "*** YOUR CODE HERE ***"
-
+        self.year = self.present_year
 
 class Coin:
     cents = None  # will be provided by subclasses, but not by Coin itself
@@ -47,7 +47,7 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
-
+        return self.cents + max((Mint().present_year-self.year-50),0)
 
 class Nickel(Coin):
     cents = 5
@@ -74,7 +74,11 @@ def store_digits(n):
     >>> link1 = Link(3, Link(Link(4), Link(5, Link(6))))
     """
     "*** YOUR CODE HERE ***"
-
+    result = Link.empty
+    while n > 0:
+        result = Link(n%10, result)
+        n //= 10
+    return result
 
 def deep_map_mut(func, lnk):
     """Mutates a deep link lnk by replacing each item found with the
@@ -94,7 +98,13 @@ def deep_map_mut(func, lnk):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
-
+    if lnk is Link.empty:
+        return
+    if isinstance(lnk.first, Link):
+        deep_map_mut(func, lnk.first)
+    else:
+        lnk.first = func(lnk.first)
+    deep_map_mut(func, lnk.rest)
 
 def two_list(vals, counts):
     """
@@ -116,7 +126,15 @@ def two_list(vals, counts):
     Link(1, Link(1, Link(3, Link(3, Link(2)))))
     """
     "*** YOUR CODE HERE ***"
+    if len(counts) == 0:
+        return Link.empty
+    if len(counts) == 1 and counts[0] == 0:
+        return Link.empty
+    if counts[0] == 0:
+        return two_list(vals[1:], counts[1:])
 
+    counts[0] -= 1
+    return Link(vals[0], two_list(vals, counts))
 
 class VirFib():
     """A Virahanka Fibonacci number.
@@ -145,7 +163,12 @@ class VirFib():
 
     def next(self):
         "*** YOUR CODE HERE ***"
-
+        if self.value == 0:
+            result = VirFib(1)
+        else:
+            result = VirFib(self.prev + self.value)
+        result.prev = self.value
+        return result
     def __repr__(self):
         return "VirFib object, value " + str(self.value)
 
@@ -176,7 +199,26 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
+    def min_bst(t):
+        if t.is_leaf():
+            return t.label
+        return min(t.label, min_bst(t.branches[0]))
 
+    def max_bst(t):
+        if t.is_leaf():
+            return t.label
+        return max(t.label, max_bst(t.branches[-1]))
+
+    if t.is_leaf():
+        return True
+    if len(t.branches) == 1:
+        c = t.branches[0]
+        return is_bst(c) and (t.label >= max_bst(c) or t.label <= min_bst(c))
+    elif len(t.branches) == 2:
+        c1, c2 = t.branches[0], t.branches[1]
+        valid_trees = is_bst(c1) and is_bst(c2)
+        return valid_trees and t.label >= max_bst(c1) and t.label <= min_bst(c2)
+    return False
 
 class Link:
     """A linked list.

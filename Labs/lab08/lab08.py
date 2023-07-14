@@ -8,7 +8,11 @@ def convert_link(link):
     []
     """
     "*** YOUR CODE HERE ***"
-
+    if link is Link.empty:
+        return []
+    if isinstance(link.first, Link):
+        return convert_link(link.first) + convert_link(link.rest)
+    return [link.first] + convert_link(link.rest)
 
 def duplicate_link(link, val):
     """Mutates `link` such that if there is a linked list
@@ -30,7 +34,12 @@ def duplicate_link(link, val):
     Link(1, Link(2, Link(2, Link(2, Link(2, Link(3))))))
     """
     "*** YOUR CODE HERE ***"
-
+    if link is Link.empty:
+        return
+    remaining = link.rest
+    if link.first == val:
+        link.rest = Link(val, remaining)
+    duplicate_link(remaining, val)
 
 def cumulative_mul(t):
     """Mutates t so that each node's label becomes the product of all labels in
@@ -46,7 +55,19 @@ def cumulative_mul(t):
     Tree(5040, [Tree(60, [Tree(3), Tree(4), Tree(5)]), Tree(42, [Tree(7)])])
     """
     "*** YOUR CODE HERE ***"
+    def leaves_mul(t):
+        if not t or t.is_leaf():
+            return 1
+        result = 1
+        for b in t.branches:
+            result *= b.label
+        return result
 
+    if t.is_leaf():
+        return
+    for b in t.branches:
+        cumulative_mul(b)
+    t.label = t.label * leaves_mul(t)
 
 def every_other(s):
     """Mutates a linked list so that all the odd-indiced elements are removed
@@ -66,7 +87,9 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
-
+    if isinstance(s, Link) and not isinstance(s.rest, tuple):
+        s.rest = s.rest.rest
+        every_other(s.rest)
 
 def prune_small(t, n):
     """Prune the tree mutatively, keeping only the n branches
@@ -85,12 +108,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
-
+    while len(t.branches) > n:
+        largest = max(t.branches, key=lambda b: b.label)
+        t.branches.remove(largest)
+    for b in t.branches:
+        prune_small(b, n)
 
 class Link:
     """A linked list.

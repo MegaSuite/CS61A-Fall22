@@ -8,7 +8,11 @@ def insert_into_all(item, nested_list):
     [[0], [0, 1, 2], [0, 3]]
     """
     "*** YOUR CODE HERE ***"
-
+    return [[item] + list for list in nested_list]
+    lists = []
+    for list in nested_list:
+        lists.append([item] + list)
+    return lists
 
 def subseqs(s):
     """Return a nested list (a list of lists) of all subsequences of S.
@@ -20,11 +24,13 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-    if ________________:
-        ________________
+    if len(s) == 0:
+        return [[]]
+    elif len(s) == 1:
+        return [[], s]
     else:
-        ________________
-        ________________
+        sub = subseqs(s[1:])
+        return sub + insert_into_all(s[0], sub)
 
 
 def non_decrease_subseqs(s):
@@ -43,14 +49,14 @@ def non_decrease_subseqs(s):
     """
     def subseq_helper(s, prev):
         if not s:
-            return ____________________
+            return [[]]
         elif s[0] < prev:
-            return ____________________
+            return subseq_helper(s[1:], prev)
         else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+            a = subseq_helper(s[1:], s[0])  # all elements are above s[0]
+            b = subseq_helper(s[1:], prev)
+            return insert_into_all(s[0], a) + b
+    return subseq_helper(s, 0)
 
 
 def num_trees(n):
@@ -74,7 +80,12 @@ def num_trees(n):
 
     """
     "*** YOUR CODE HERE ***"
-
+    if n < 3:
+        return 1
+    sum = 0
+    for i in range(1, n):
+        sum += num_trees(i) * num_trees(n - i)
+    return sum
 
 def partition_gen(n):
     """
@@ -88,11 +99,11 @@ def partition_gen(n):
     """
     def yield_helper(j, k):
         if j == 0:
-            ____________________________________________
-        elif ____________________________________________:
-            for small_part in ________________________________:
-                yield ____________________________________________
-            yield ________________________________________
+            yield []
+        elif j > 0 and k > 0:
+            for small_part in yield_helper(j - k, k):
+                yield [k] + small_part
+            yield from yield_helper(j, k - 1)
     yield from yield_helper(n, n)
 
 
@@ -134,7 +145,37 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, type, price):
+        self.type = type
+        self.price = price
+        self.stocks = 0
+        self.balance = 0
 
+    def vend(self):
+        if self.stocks:
+            if self.balance < self.price:
+                return f'Please update your balance with ${self.price - self.balance} more funds.'
+            elif self.balance == self.price:
+                self.balance = 0
+                self.stocks -= 1
+                return f'Here is your {self.type}.'
+            else:
+                self.balance, change = 0, self.balance - self.price
+                self.stocks -= 1
+                return f'Here is your {self.type} and ${change} change.'
+        else:
+            return 'Nothing left to vend. Please restock.'
+
+    def add_funds(self, fund):
+        if self.stocks:
+            self.balance += fund
+            return f'Current balance: ${self.balance}'
+        else:
+            return f'Nothing left to vend. Please restock. Here is your ${fund}.'
+
+    def restock(self, stock):
+        self.stocks += stock
+        return f'Current {self.type} stock: {self.stocks}'
 
 def trade(first, second):
     """Exchange the smallest prefixes of first and second that have equal sum.
@@ -173,9 +214,9 @@ def trade(first, second):
     """
     m, n = 1, 1
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    equal_prefix = lambda: sum(first[:m]) == sum(second[:n])
+    while m <= len(first) and n <= len(second) and not equal_prefix():
+        if sum(first[:m]) < sum(second[:n]):
             m += 1
         else:
             n += 1
@@ -213,11 +254,11 @@ def shuffle(cards):
     ['AH', 'AD', 'AS', 'AC', '2H', '2D', '2S', '2C', '3H', '3D', '3S', '3C']
     """
     assert len(cards) % 2 == 0, 'len(cards) must be even'
-    half = _______________
+    half = len(cards) // 2
     shuffled = []
-    for i in _____________:
-        _________________
-        _________________
+    for i in range(half):
+        shuffled.append(cards[i])
+        shuffled.append(cards[half + i])
     return shuffled
 
 
@@ -242,7 +283,15 @@ def insert(link, value, index):
     IndexError: Out of bounds!
     """
     "*** YOUR CODE HERE ***"
-
+    i = 0
+    while link and index - i:
+        link = link.rest
+        i += 1
+    if link is Link.empty:
+        raise IndexError('Out of bounds!')
+    r = Link(link.first, link.rest)
+    link.first = value
+    link.rest = r
 
 def deep_len(lnk):
     """ Returns the deep length of a possibly deep linked list.
@@ -258,12 +307,12 @@ def deep_len(lnk):
     >>> deep_len(levels)
     5
     """
-    if ______________:
+    if lnk is Link.empty:
         return 0
-    elif ______________:
+    elif isinstance(lnk, int):
         return 1
     else:
-        return _________________________
+        return deep_len(lnk.first) + deep_len(lnk.rest)
 
 
 def make_to_string(front, mid, back, empty_repr):
@@ -282,10 +331,10 @@ def make_to_string(front, mid, back, empty_repr):
     '()'
     """
     def printer(lnk):
-        if ______________:
-            return _________________________
+        if lnk is Link.empty:
+            return empty_repr
         else:
-            return _________________________
+            return front + str(lnk.first) + mid + printer(lnk.rest) + back
     return printer
 
 
@@ -340,7 +389,20 @@ def long_paths(t, n):
     [[0, 11, 12, 13, 14]]
     """
     "*** YOUR CODE HERE ***"
+    path_list = []
 
+    def helper(t, current_path, length):
+        current_path.append(t.label)
+        if t.is_leaf():
+            if length >= n:
+                path_list.append(current_path[:])  # a copy
+            current_path.pop()
+            return
+        for b in t.branches:
+            helper(b, current_path, length + 1)
+        current_path.pop()
+    helper(t, [], 0)
+    return path_list
 
 def reverse_other(t):
     """Mutates the tree such that nodes on every other (odd-depth)
@@ -356,7 +418,15 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
-
+    if t.is_leaf():
+        return
+    l = len(t.branches)
+    labels = [b.label for b in t.branches]
+    for i in range(l):
+        t.branches[i].label = labels[l - i - 1]
+    for b in t.branches:
+        for b1 in b.branches:
+            reverse_other(b1)
 
 class Link:
     """A linked list.

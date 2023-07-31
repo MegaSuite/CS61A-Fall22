@@ -56,8 +56,6 @@ def pascal(row, column):
     
 
 
-#############hard to get
-
 def paths(m, n):
     """Return the number of paths from one corner of an
     M by N grid to the opposite corner.
@@ -79,8 +77,6 @@ def paths(m, n):
     elif n == 1:
         return paths(m-1, n)
     return paths(m-1,n) + paths(m, n-1)
-
-#################################
 
 
 

@@ -74,5 +74,6 @@ class FreeChecking(Account):
     def withdraw(self, amount):
         if self.free_withdrawals == 0:
             amount = amount+self.withdraw_fee
+            
         self.free_withdrawals = max(self.free_withdrawals-1, 0)
         return super().withdraw(amount)

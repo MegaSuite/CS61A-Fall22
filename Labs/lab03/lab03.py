@@ -109,8 +109,6 @@ def apply_twice(func):
     return apply_twice_func
 
 
-####################### hard to get
-
 def div_by_primes_under(n):
     """
     >>> div_by_primes_under(10)(11)
@@ -224,5 +222,3 @@ def pow_church(m, n):
     """
     "*** YOUR CODE HERE ***"
     return n(m)
-
-####################################

@@ -150,8 +150,6 @@ def get_lon(city):
     else:
         return city[2]
 
-###############
-
 
 def berry_finder(t):
     """Returns True if t contains a node with the value 'berry' and 
@@ -178,6 +176,7 @@ def berry_finder(t):
           if berry_finder(branch):
             return True
         return False
+
 
 def sprout_leaves(t, leaves):
     """Sprout new leaves containing the data in leaves at each leaf in
@@ -283,7 +282,8 @@ def preorder(t):
     "*** YOUR CODE HERE ***"
     return flatten([label(t)] + [preorder(b) for b in branches(t)])
 
-#################to get
+
+
 def add_trees(t1, t2):
     """
     >>> numbers = tree(1,
@@ -331,15 +331,12 @@ def add_trees(t1, t2):
     if len(branches(t1)) > min_depth:
       for i in range(min_depth, len(branches(t1))):
         new_branches += [branches(t1)[i]]
+        
     if len(branches(t2)) > min_depth:
       for i in range(min_depth, len(branches(t2))):
         new_branches += [branches(t2)[i]]
     
     return tree(label(t1)+label(t2), new_branches)
-
-
-#####################################
-
 
 
 

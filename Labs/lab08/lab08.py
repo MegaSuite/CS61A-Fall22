@@ -14,6 +14,7 @@ def convert_link(link):
         return convert_link(link.first) + convert_link(link.rest)
     return [link.first] + convert_link(link.rest)
 
+
 def duplicate_link(link, val):
     """Mutates `link` such that if there is a linked list
     node that has a first equal to value, that node will
@@ -40,6 +41,7 @@ def duplicate_link(link, val):
     if link.first == val:
         link.rest = Link(val, remaining)
     duplicate_link(remaining, val)
+
 
 def cumulative_mul(t):
     """Mutates t so that each node's label becomes the product of all labels in
@@ -69,6 +71,7 @@ def cumulative_mul(t):
         cumulative_mul(b)
     t.label = t.label * leaves_mul(t)
 
+
 def every_other(s):
     """Mutates a linked list so that all the odd-indiced elements are removed
     (using 0-based indexing).
@@ -90,6 +93,7 @@ def every_other(s):
     if isinstance(s, Link) and not isinstance(s.rest, tuple):
         s.rest = s.rest.rest
         every_other(s.rest)
+
 
 def prune_small(t, n):
     """Prune the tree mutatively, keeping only the n branches
@@ -113,6 +117,7 @@ def prune_small(t, n):
         t.branches.remove(largest)
     for b in t.branches:
         prune_small(b, n)
+
 
 class Link:
     """A linked list.

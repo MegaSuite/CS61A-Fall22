@@ -1,6 +1,6 @@
 HW_SOURCE_FILE = __file__
 
-##############why
+
 def insert_items(lst, entry, elem):
     """Inserts elem into lst after each occurrence of entry and then returns lst.
 
@@ -30,7 +30,10 @@ def insert_items(lst, entry, elem):
     True
     """
     "*** YOUR CODE HERE ***"
-    flag = True
+    flag = True 
+    
+    #it's possible that the elem is the same as entry so we need a flag to avoid infinite loop
+    
     for id, val in enumerate(lst):
         if val == entry and flag:
             lst.insert(id+1, elem)
@@ -40,7 +43,7 @@ def insert_items(lst, entry, elem):
   
     return lst
 
-################
+
 
 def count_occurrences(t, n, x):
     """Return the number of times that x appears in the first n elements of iterator t.

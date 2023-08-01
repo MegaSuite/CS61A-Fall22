@@ -37,7 +37,6 @@ def subseqs(s):
         sub = subseqs(s[1:])
         return sub + insert_into_all(s[0], sub)
 
-####################
 
 def non_decrease_subseqs(s):
     """Assuming that S is a list, return a nested list of all subsequences
@@ -88,10 +87,14 @@ def num_trees(n):
     "*** YOUR CODE HERE ***"
     if n < 3:
         return 1
+    
+    # return sum(num_trees(k) * num_trees(n-k) for k in range(1, n))
+    
     sum = 0
     for i in range(1, n):
         sum += num_trees(i) * num_trees(n - i)
     return sum
+
 
 def partition_gen(n):
     """
@@ -103,6 +106,9 @@ def partition_gen(n):
     [2, 1, 1]
     [1, 1, 1, 1]
     """
+
+    # Q(n,m)=Q(n,m-1)+Q(n-m,m)
+
     def yield_helper(j, k):
         if j == 0:
             yield []
@@ -110,6 +116,7 @@ def partition_gen(n):
             for small_part in yield_helper(j - k, k):
                 yield [k] + small_part
             yield from yield_helper(j, k - 1)
+
     yield from yield_helper(n, n)
 
 
@@ -240,6 +247,14 @@ def card(n):
     specials = {1: 'A', 11: 'J', 12: 'Q', 13: 'K'}
     return specials.get(n, str(n))
 
+"""
+get()方法语法：
+dict.get(key[, value]) 
+参数
+key -- 字典中要查找的键。
+value -- 可选，如果指定键的值不存在时，返回该默认值。
+"""
+
 
 def shuffle(cards):
     """Return a shuffled list that interleaves the two halves of cards.
@@ -298,6 +313,7 @@ def insert(link, value, index):
     r = Link(link.first, link.rest)
     link.first = value
     link.rest = r
+
 
 def deep_len(lnk):
     """ Returns the deep length of a possibly deep linked list.

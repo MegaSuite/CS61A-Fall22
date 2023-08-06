@@ -34,7 +34,9 @@ def scheme_eval(expr, env, _=None):  # Optional third argument is ignored
         return scheme_forms.SPECIAL_FORMS[first](rest, env)
     else:
         # BEGIN PROBLEM 3
-        "*** YOUR CODE HERE ***"
+        procedure = scheme_eval(first, env)
+        args = rest.map(lambda operand: scheme_eval(operand, env))
+        return scheme_apply(procedure, args, env)
         # END PROBLEM 3
 
 
@@ -46,21 +48,31 @@ def scheme_apply(procedure, args, env):
        assert False, "Not a Frame: {}".format(env)
     if isinstance(procedure, BuiltinProcedure):
         # BEGIN PROBLEM 2
-        "*** YOUR CODE HERE ***"
+        # convert Scheme list to Python list
+        ele = args
+        lst = []
+        while ele is not nil:
+            lst.append(ele.first)
+            ele = ele.rest
+        if procedure.need_env:
+            lst.append(env)
         # END PROBLEM 2
         try:
             # BEGIN PROBLEM 2
-            "*** YOUR CODE HERE ***"
+            return procedure.py_func(*lst)
             # END PROBLEM 2
         except TypeError as err:
             raise SchemeError('incorrect number of arguments: {0}'.format(procedure))
     elif isinstance(procedure, LambdaProcedure):
         # BEGIN PROBLEM 9
-        "*** YOUR CODE HERE ***"
+        frame = procedure.env.make_child_frame(procedure.formals, args)
+        return eval_all(procedure.body, frame)
         # END PROBLEM 9
     elif isinstance(procedure, MuProcedure):
         # BEGIN PROBLEM 11
-        "*** YOUR CODE HERE ***"
+        # env is when the call is evaluated, so env is the parent frame of the env of MuProcesure
+        frame = env.make_child_frame(procedure.formals, args) # create a new frame for mu
+        return eval_all(procedure.body, frame)
         # END PROBLEM 11
     else:
         assert False, "Unexpected procedure: {}".format(procedure)
@@ -82,9 +94,13 @@ def eval_all(expressions, env):
     2
     """
     # BEGIN PROBLEM 6
+    if expressions is nil:
+        return None
+    while expressions.rest:
+        scheme_eval(expressions.first, env)
+        expressions = expressions.rest
     return scheme_eval(expressions.first, env)  # replace this with lines of your own code
     # END PROBLEM 6
-
 
 ##################
 # Tail Recursion #
@@ -120,7 +136,9 @@ def optimize_tail_calls(unoptimized_scheme_eval):
 
         result = Unevaluated(expr, env)
         # BEGIN PROBLEM EC
-        "*** YOUR CODE HERE ***"
+        while isinstance(result, Unevaluated):
+            result = unoptimized_scheme_eval(result.expr, result.env)
+        return result
         # END PROBLEM EC
     return optimized_eval
 
@@ -129,4 +147,4 @@ def optimize_tail_calls(unoptimized_scheme_eval):
 # Uncomment the following line to apply tail call optimization #
 ################################################################
 
-# scheme_eval = optimize_tail_calls(scheme_eval)
+scheme_eval = optimize_tail_calls(scheme_eval)

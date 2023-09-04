@@ -47,7 +47,7 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
-        return self.cents + max((Mint().present_year-self.year-50),0)
+        return self.cents + max((Mint().present_year-self.year-50),0) # type: ignore
 
 class Nickel(Coin):
     cents = 5
@@ -166,8 +166,8 @@ class VirFib():
         if self.value == 0:
             result = VirFib(1)
         else:
-            result = VirFib(self.prev + self.value)
-        result.prev = self.value
+            result = VirFib(self.prev + self.value) # type: ignore
+        result.prev = self.value # type: ignore
         return result
     def __repr__(self):
         return "VirFib object, value " + str(self.value)
